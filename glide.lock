@@ -1,0 +1,12 @@
+hash: a689e0f64f2656225826954932a075be2e6da8664c1155517bef2d788156f2c2
+updated: 2017-06-30T19:11:35.578332053+04:30
+imports:
+- name: github.com/go-telegram-bot-api/telegram-bot-api
+  version: 0a57807db79efce7f6719fbb2c0e0f83fda79aec
+- name: github.com/joho/godotenv
+  version: 726cc8b906e3d31c70a9671c90a13716a8d3f50d
+- name: github.com/pkg/errors
+  version: 645ef00459ed84a119197bfb8d8205042c6df63d
+- name: github.com/technoweenie/multipartstreamer
+  version: a90a01d73ae432e2611d178c18367fbaa13e0154
+testImports: []
