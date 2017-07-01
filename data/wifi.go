@@ -8,6 +8,7 @@ import (
 
 	"github.com/pkg/errors"
 
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/mamal72/cafenull-bot/config"
 )
 
@@ -24,6 +25,7 @@ type WifiCredentialData struct {
 // WifiCredentialStorage is main struct with mux for credentials storage
 type WifiCredentialStorage struct {
 	credentials []WifiCredentialData
+	usersQueue  []int
 	sync.Mutex
 }
 
@@ -84,6 +86,7 @@ func Pop() (WifiCredentialData, error) {
 // LoadFile loads credentials CSV file in storage
 func LoadFile() error {
 	GetCredentialsStorage()
+
 	// Return if CSV file does not exist
 	if _, err := os.Stat(config.WifiCSVFileAddress); os.IsNotExist(err) {
 		return nil
@@ -116,4 +119,34 @@ func LoadFile() error {
 	storage.credentials = newCredentials
 
 	return nil
+}
+
+// AddUserToQueue adds user to receiving queue
+func AddUserToQueue(user *tgbotapi.User) {
+	GetCredentialsStorage()
+
+	storage.usersQueue = append(storage.usersQueue, user.ID)
+}
+
+// RemoveUserFromQueue removes user from receiving queue
+func RemoveUserFromQueue(user *tgbotapi.User) {
+	GetCredentialsStorage()
+
+	for i, item := range storage.usersQueue {
+		if item == user.ID {
+			storage.usersQueue = append(storage.usersQueue[:i], storage.usersQueue[i+1:]...)
+		}
+	}
+}
+
+// IsUserInQueue returns true if user is in queue
+func IsUserInQueue(user *tgbotapi.User) bool {
+	GetCredentialsStorage()
+
+	for _, item := range storage.usersQueue {
+		if item == user.ID {
+			return true
+		}
+	}
+	return false
 }

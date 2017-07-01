@@ -4,6 +4,7 @@ import (
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 
 	"github.com/mamal72/cafenull-bot/helpers"
+	"github.com/mamal72/cafenull-bot/messages"
 )
 
 func handleCommand(bot *tgbotapi.BotAPI, msg *tgbotapi.Message) {
@@ -17,8 +18,10 @@ func handleCommand(bot *tgbotapi.BotAPI, msg *tgbotapi.Message) {
 
 func handleKeyboardButton(bot *tgbotapi.BotAPI, msg *tgbotapi.Message) {
 	switch msg.Text {
-	case "اطلاعات وای‌فای 📶":
+	case messages.WifiButton:
 		handleWifiButton(bot, msg)
+	case messages.ContactInfoButton:
+		handleContactInfoButton(bot, msg)
 	}
 }
 

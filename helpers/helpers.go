@@ -10,6 +10,7 @@ import (
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 
 	"github.com/mamal72/cafenull-bot/config"
+	"github.com/mamal72/cafenull-bot/messages"
 )
 
 // CheckErr checks for error and panics if it exists
@@ -21,9 +22,12 @@ func CheckErr(err error) {
 
 // GetMainKeyboard returns main bot keyboard
 func GetMainKeyboard() tgbotapi.ReplyKeyboardMarkup {
-	wifiButton := tgbotapi.NewKeyboardButton("اطلاعات وای‌فای 📶")
-	keyboardButtons := tgbotapi.NewKeyboardButtonRow(wifiButton)
-	return tgbotapi.NewReplyKeyboard(keyboardButtons)
+	contactInfoButton := tgbotapi.NewKeyboardButton(messages.ContactInfoButton)
+	wifiButton := tgbotapi.NewKeyboardButton(messages.WifiButton)
+	rows := [][]tgbotapi.KeyboardButton{
+		tgbotapi.NewKeyboardButtonRow(contactInfoButton, wifiButton),
+	}
+	return tgbotapi.NewReplyKeyboard(rows...)
 }
 
 // IsPrivate returns true if message is a private message
