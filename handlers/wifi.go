@@ -18,28 +18,21 @@ func handleWifiButton(bot *tgbotapi.BotAPI, msg *tgbotapi.Message) error {
 		return nil
 	}
 
-	// Add user to receiving queue
-	data.AddUserToQueue(msg.From)
-
-	// Ask user to wait for credentials
+	// Send credentials message to user
 	var credentialsMsg string
-	delay := config.WifiCredentialsSendDelay
-	helpers.SendTextMessage(
-		bot,
-		msg.From.ID,
-		fmt.Sprintf(messages.SendingWifiCredentials, int(delay.Seconds())),
-	)
+	credData, err := data.Pop()
+	if err != nil {
+		credentialsMsg = messages.NoWifiCredentials
+	} else {
+		credentialsMsg = fmt.Sprintf(messages.WifiCredentials, credData.Username, credData.Password)
+	}
+	helpers.SendMarkdownMessage(bot, msg.From.ID, credentialsMsg)
 
-	// Send credentials message with a short delay
+	// Add user to wait queue
+	data.AddUserToQueue(msg.From)
 	go func() {
+		delay := config.WifiCredentialsSendDelay
 		time.Sleep(delay)
-		credData, err := data.Pop()
-		if err != nil {
-			credentialsMsg = messages.NoWifiCredentials
-		} else {
-			credentialsMsg = fmt.Sprintf(messages.WifiCredentials, credData.Username, credData.Password)
-		}
-		helpers.SendMarkdownMessage(bot, msg.From.ID, credentialsMsg)
 		data.RemoveUserFromQueue(msg.From)
 	}()
 
